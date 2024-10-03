@@ -1,4 +1,4 @@
-import { role } from "@/lib/data";
+import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -32,23 +32,28 @@ const menuItems = [
       },
       {
         icon: "/subject.png",
-        label: "Courses",
+        label: "Subjects",
         href: "/list/subjects",
         visible: ["admin"],
       },
       {
         icon: "/class.png",
-        label: "Batches",
+        label: "Classes",
         href: "/list/classes",
         visible: ["admin", "teacher"],
       },
       {
         icon: "/lesson.png",
-        label: "Curriculum",
+        label: "Lessons",
         href: "/list/lessons",
         visible: ["admin", "teacher"],
       },
-      
+      {
+        icon: "/exam.png",
+        label: "Exams",
+        href: "/list/exams",
+        visible: ["admin", "teacher", "student", "parent"],
+      },
       {
         icon: "/assignment.png",
         label: "Assignments",
@@ -56,17 +61,10 @@ const menuItems = [
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
-        icon: "/exam.png",
-        label: "Projects",
-        href: "/list/exams",
-        visible: ["admin", "teacher", ],
-      },
-      
-      {
         icon: "/result.png",
-        label: "Task",
+        label: "Results",
         href: "/list/results",
-        visible: ["admin", "teacher", ],
+        visible: ["admin", "teacher", "student", "parent"],
       },
       {
         icon: "/attendance.png",
@@ -119,7 +117,9 @@ const menuItems = [
   },
 ];
 
-const Menu = () => {
+const Menu = async () => {
+  const user = await currentUser();
+  const role = user?.publicMetadata.role as string;
   return (
     <div className="mt-4 text-sm">
       {menuItems.map((i) => (
